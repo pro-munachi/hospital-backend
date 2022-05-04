@@ -50,7 +50,29 @@ const getHospitals = asyncHandler(async (req, res) => {
   }
 })
 
+//@desc    Find Hospital By id
+//@route   Get /api/hospital/:id
+//@access  Public
+
+const getHospitalById = asyncHandler(async (req, res) => {
+  const hospital = await Hospital.findById(req.params.id)
+
+  if (hospital) {
+    res.status(201).json({
+      hasError: false,
+      message: 'data fetched successfully',
+      hospital,
+    })
+  } else {
+    res.json({
+      hasError: true,
+      message: `sorry something went wrong`,
+    })
+  }
+})
+
 module.exports = {
   registerHospital,
   getHospitals,
+  getHospitalById,
 }

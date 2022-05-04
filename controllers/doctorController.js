@@ -32,6 +32,27 @@ const registerDoctor = asyncHandler(async (req, res) => {
   }
 })
 
+//@desc    Find Doctor By id
+//@route   Get /api/doctor/:id
+//@access  Public
+
+const getDoctorById = asyncHandler(async (req, res) => {
+  const doctors = await Doctor.findById(req.params.id)
+
+  if (doctors) {
+    res.status(201).json({
+      hasError: false,
+      message: 'data fetched successfully',
+      doctors,
+    })
+  } else {
+    res.json({
+      hasError: true,
+      message: `sorry something went wrong`,
+    })
+  }
+})
+
 //@desc    Find Doctor By Hospital
 //@route   Get /api/doctor/findbyhospital
 //@access  Public
@@ -56,4 +77,5 @@ const getDoctorByHospital = asyncHandler(async (req, res) => {
 module.exports = {
   registerDoctor,
   getDoctorByHospital,
+  getDoctorById,
 }
