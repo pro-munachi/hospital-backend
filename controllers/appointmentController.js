@@ -9,17 +9,29 @@ const Hospital = require('../models/hospitalModel')
 //@access  Public
 
 const Book = asyncHandler(async (req, res) => {
-  let { email, name, hospitalId, number, illness, image, doctorId, time } =
-    req.body
+  let {
+    email,
+    name,
+    hospitalId,
+    number,
+    illness,
+    image,
+    doctorId,
+    time,
+    date,
+  } = req.body
 
-  if (time) {
+  if (time && date) {
     const appoint = await Appointment.find({ doctorId })
 
     const doctor = await Doctor.findById(doctorId)
     const hospital = await Hospital.findById(hospitalId)
 
+    const formatDate = moment(date).format('MMM Do YYYY')
+    const sortDay = moment(date).format('YYYY-DD-MM')
+
     for (let i = 0; i < appoint.length; i++) {
-      if (appoint[i].time === time) {
+      if (appoint[i].time === time && appoint[i].date === formatDate) {
         res.json({
           hasError: true,
           message: `${doctor.name} is already booked for the time`,
@@ -37,8 +49,10 @@ const Book = asyncHandler(async (req, res) => {
       illness,
       image,
       time,
+      date: formatDate,
       doctor: doctor.name,
       hospital: hospital.name,
+      sortDate: sortDay,
     })
 
     if (book) {
@@ -64,6 +78,9 @@ const getDoctorAppointment = asyncHandler(async (req, res) => {
   const doctor = await Appointment.find({ doctorId: req.params.id })
 
   if (doctor) {
+    // const today = moment(new Date()).format('YYYY-DD-MM')
+    // const dateTo = moment().add(7, 'd').format('YYYY-MM-DD')
+
     res.status(201).json({
       hasError: false,
       message: 'data fetched successfully',

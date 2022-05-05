@@ -39,6 +39,8 @@ const appointmentSchema = mongoose.Schema(
       required: true,
     },
     time: { type: String, required: true },
+    date: { type: String, required: true },
+    sortDate: { type: String, required: true },
   },
   {
     timestamps: true,
