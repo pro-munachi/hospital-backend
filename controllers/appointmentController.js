@@ -28,7 +28,7 @@ const Book = asyncHandler(async (req, res) => {
     const hospital = await Hospital.findById(hospitalId)
 
     const formatDate = moment(date).format('MMM Do YYYY')
-    const sortDay = moment(date).format('YYYY-DD-MM')
+    const sortDay = moment(date).format()
 
     for (let i = 0; i < appoint.length; i++) {
       if (appoint[i].time === time && appoint[i].date === formatDate) {
@@ -58,7 +58,7 @@ const Book = asyncHandler(async (req, res) => {
     if (book) {
       res.status(201).json({
         hasError: false,
-        message: 'hospital created successfully',
+        message: 'Appointment Booked Successfully',
         book,
       })
     } else {
@@ -78,13 +78,19 @@ const getDoctorAppointment = asyncHandler(async (req, res) => {
   const doctor = await Appointment.find({ doctorId: req.params.id })
 
   if (doctor) {
-    // const today = moment(new Date()).format('YYYY-DD-MM')
-    // const dateTo = moment().add(7, 'd').format('YYYY-MM-DD')
+    let data = await Appointment.find({
+      doctorId: req.params.id,
+      sortDate: {
+        $gte: moment().subtract(1, 'd').format(),
+        $lte: moment().add(2, 'y').format(),
+      },
+    }).sort('sortDate')
 
     res.status(201).json({
       hasError: false,
       message: 'data fetched successfully',
-      doctor,
+      // doctor,
+      data,
     })
   } else {
     res.json({
